@@ -2,18 +2,19 @@
 
 I added display item "#{battery_smart}".
 
-power state | display
--|-
-Power >= 99% & Plugged in | icon_status_charged
-Otherwise | Icon_status, percentage and remain with color_charge bg
+| power state               | display                                                 |
+| ------------------------- | ------------------------------------------------------- |
+| Power >= 99% & Plugged in | icon_status_charged                                     |
+| Otherwise                 | Icon_status, percentage and remain with color_charge bg |
 
- Tmux battery status
+Tmux battery status
 
 Enables displaying battery percentage and status icon in tmux status-right.
 
 ## Installation
 
-In order to read the battery status, this plugin depends on having one of the following applications installed:
+In order to read the battery status, this plugin depends on having one of the following
+applications installed:
 
 - pmset (MacOS only)
 - acpi
@@ -21,7 +22,10 @@ In order to read the battery status, this plugin depends on having one of the fo
 - termux-battery-status
 - apm
 
-In a normal situation, one of the above should be installed on your system by default and thus it should not be necessary to specifically install one of them. That being said, the `acpi` utility is currently recommended for use over `upower` where possible due to ongoing CPU usage issues.
+In a normal situation, one of the above should be installed on your system by default
+and thus it should not be necessary to specifically install one of them.
+That being said, the `acpi` utility is currently recommended for use over `upower`
+where possible due to ongoing CPU usage issues.
 
 ### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 
@@ -59,7 +63,8 @@ If format strings are added to `status-right`, they should now be visible.
 
 ## Usage
 
-Add any of the supported format strings (see below) to the `status-right` tmux option in `.tmux.conf`. Example:
+Add any of the supported format strings (see below) to the `status-right` tmux option
+in `.tmux.conf`. Example:
 
 ```tmux
 set -g status-right '#{battery_status_bg} Batt: #{battery_icon} #{battery_percentage} #{battery_remain} | %a %h-%d %H:%M '
@@ -67,12 +72,18 @@ set -g status-right '#{battery_status_bg} Batt: #{battery_icon} #{battery_percen
 
 ### Supported Format Strings
 
-- `#{battery_color_bg}` - will set the background color of the status bar based on the battery charge level if discharging and status otherwise
-- `#{battery_color_fg}` - will set the foreground color of the status bar based on the battery charge level if discharging and status otherwise
-- `#{battery_color_charge_bg}` - will set the background color of the status bar based solely on the battery charge level
-- `#{battery_color_charge_fg}` - will set the foreground color of the status bar based solely on the battery charge level
-- `#{battery_color_status_bg}` - will set the background color of the status bar based solely on the battery status
-- `#{battery_color_status_fg}` - will set the foreground color of the status bar based solely on the battery status
+- `#{battery_color_bg}` - will set the background color of the status bar based
+  on the battery charge level if discharging and status otherwise
+- `#{battery_color_fg}` - will set the foreground color of the status bar based
+  on the battery charge level if discharging and status otherwise
+- `#{battery_color_charge_bg}` - will set the background color of the status bar
+  based solely on the battery charge level
+- `#{battery_color_charge_fg}` - will set the foreground color of the status bar
+  based solely on the battery charge level
+- `#{battery_color_status_bg}` - will set the background color of the status bar
+  based solely on the battery status
+- `#{battery_color_status_fg}` - will set the foreground color of the status bar
+  based solely on the battery status
 - `#{battery_graph}` - will show battery percentage as a bar graph: ▁▂▄▆█
 - `#{battery_icon}` - will display a battery status/charge icon
 - `#{battery_icon_charge}` - will display a battery charge icon
@@ -86,7 +97,8 @@ set -g status-right '#{battery_status_bg} Batt: #{battery_icon} #{battery_percen
 
 `#{battery_remain}`
 
-- `@batt_remain_short`: 'true' / 'false' - This will shorten the time remaining (when charging or discharging) to `~H:MM`.
+- `@batt_remain_short`: 'true' / 'false' - This will shorten the time remaining
+  (when charging or discharging) to `~H:MM`.
 
 ### Defaults
 
@@ -94,11 +106,18 @@ set -g status-right '#{battery_status_bg} Batt: #{battery_icon} #{battery_percen
 
 #### Icons/Colors
 
-By default, the following colors and icons are used. (The exact colors displayed depends on your terminal / X11 config.)
+By default, the following colors and icons are used. (The exact colors displayed
+depends on your terminal / X11 config.)
 
-Please be aware that the 'level of charge' as noted below (e.g. `[80%-95%)`) uses interval notation. If you are unfamiliar with it, [check it out here](https://en.wikipedia.org/wiki/Bracket_(mathematics)#Intervals).
+Please be aware that the 'level of charge' as noted below (e.g. `[80%-95%)`) uses
+interval notation. If you are unfamiliar with it,
+[check it out here](<https://en.wikipedia.org/wiki/Bracket_(mathematics)#Intervals>).
 
-Also, a note about the `@batt_color_...` options: `@batt_color_..._primary_...` options are what will be displayed in the main `bg` or `fg` format strings you choose - e.g. if you use `#{battery_color_bg}`, the `@batt_color_..._primary_...` colors you choose will be the background. Likewise, the corresponding `@batt_color_..._secondary_...` color will be the foreground.
+Also, a note about the `@batt_color_...` options: `@batt_color_..._primary_...`
+options are what will be displayed in the main `bg` or `fg` format strings you
+choose - e.g. if you use `#{battery_color_bg}`, the `@batt_color_..._primary_...`
+colors you choose will be the background. Likewise, the corresponding
+`@batt_color_..._secondary_...` color will be the foreground.
 
 Level of Charge Colors:
 
@@ -154,7 +173,8 @@ Status Icons:
 
 #### Changing the Defaults
 
-All efforts have been made to make sane defaults, but if you wish to change any of them, add the option to `.tmux.conf`. For example:
+All efforts have been made to make sane defaults, but if you wish to change any of them,
+add the option to `.tmux.conf`. For example:
 
 ```tmux
 set -g @batt_icon_charge_tier8 '🌕'
@@ -172,13 +192,21 @@ set -g @batt_color_status_primary_charged '#3daee9'
 set -g @batt_color_status_primary_charging '#3daee9'
 ```
 
-Don't forget to reload the tmux environment after you do this by either hitting `<prefix> + I` if tmux battery is installed via the tmux plugin manager, or by typing `tmux source-file ~/.tmux.conf` in the terminal if tmux battery is manually installed.
+Don't forget to reload the tmux environment after you do this by either hitting
+`<prefix> + I` if tmux battery is installed via the tmux plugin manager, or by
+typing `tmux source-file ~/.tmux.conf` in the terminal if tmux battery is manually
+installed.
 
-*Warning*: The battery icon change most likely will not be instant. When you un-plug the power cord, it will take some time (15 - 60 seconds) for the icon to change. This depends on the `status-interval` tmux option. Setting it to 15 seconds should be good enough.
+_Warning_: The battery icon change most likely will not be instant. When you un-plug
+the power cord, it will take some time (15 - 60 seconds) for the icon to change.
+This depends on the `status-interval` tmux option. Setting it to 15 seconds should
+be good enough.
 
 ## Examples
 
-These are all examples of the default plugin color and icon schemes paired with the default tmux color scheme using the following `status-right` and `status-right-length` settings in `.tmux.conf`
+These are all examples of the default plugin color and icon schemes paired with
+the default tmux color scheme using the following `status-right` and
+`status-right-length` settings in `.tmux.conf`
 
 ```tmux
 set -g status-right 'Colors: #{battery_color_bg}bg#[default] #{battery_color_fg}fg#[default] #{battery_color_charge_bg}charge_bg#[default] #{battery_color_charge_fg}charge_fg#[default] #{battery_color_status_bg}status_bg#[default] #{battery_color_status_fg}status_fg#[default] | Graph: #{battery_graph} | Icon: #{battery_icon} | Charge Icon: #{battery_icon_charge} | Status Icon: #{battery_icon_status} | Percent: #{battery_percentage} | Remain: #{battery_remain}'
@@ -241,7 +269,13 @@ Battery in an unknown status:
 
 ### Tmux Plugins
 
-This plugin is part of the [tmux-plugins](https://github.com/tmux-plugins) organisation. Checkout plugins as [resurrect](https://github.com/tmux-plugins/tmux-resurrect), [logging](https://github.com/tmux-plugins/tmux-logging), [online status](https://github.com/tmux-plugins/tmux-online-status), and many more over at the [tmux-plugins](https://github.com/tmux-plugins) organisation page.
+This plugin is part of the [tmux-plugins](https://github.com/tmux-plugins)
+organisation. Checkout plugins as
+[resurrect](https://github.com/tmux-plugins/tmux-resurrect),
+[logging](https://github.com/tmux-plugins/tmux-logging),
+[online status](https://github.com/tmux-plugins/tmux-online-status),
+and many more over at the [tmux-plugins](https://github.com/tmux-plugins)
+organisation page.
 
 ### Maintainer
 
