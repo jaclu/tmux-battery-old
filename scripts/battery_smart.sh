@@ -37,10 +37,10 @@ if [[ -f "$f_cached_result" ]]; then
 
     time_diff=$((current_time - file_mod_time))
     if ((time_diff < cache_max_age)); then
-	cat "$f_cached_result"
-	exit 0
+        cat "$f_cached_result"
+        exit 0
     else
-	rm -f "$f_cached_result"
+        rm -f "$f_cached_result"
     fi
 fi
 
@@ -55,29 +55,33 @@ source "$CURRENT_DIR/battery_remain.sh" >/dev/null
 #short=false
 
 main() {
-	#get_icon_status_settings
-	local color_bg
-	local percentage
-	local status
-	local icon_status
-	local remain
+        #get_icon_status_settings
+        local color_bg
+        local percentage
+        local status
+        local icon_status
+        local remain
 
-	status=$(battery_status)
-	percentage="$("$CURRENT_DIR"/battery_percentage.sh | sed -e 's/%//')"
-	icon_status=$(print_icon_status "$status")
+        status=$(battery_status)
+        percentage="$("$CURRENT_DIR"/battery_percentage.sh | sed -e 's/%//')"
+        icon_status=$(print_icon_status "$status")
 
-	if [[ "$status" != "discharging" ]] && [[ "$percentage" -ge 99 ]]; then
-		# If almost full or better and plugged in, we do not need to see
-		# details about battery. An icon indicating power is plugged in,
-		# should be enough
-		printf "%s" "$icon_status" >"$f_cached_result"
-	else
-		#  Variables only retrieved when needed, in order to cut down overhead
-		color_bg="$(print_color_charge bg)"
-		remain=$(print_battery_remain)
-		printf "%s" "${color_bg}$icon_status ${percentage} ${remain}#[default]" >"$f_cached_result"
-	fi
-	cat "$f_cached_result"
+        if [[ "$percentage" -ge 75 ]] && [[ -d "/Applications/AlDente.app" ]]; then
+                # If AlDente is used 80% is considered fully charged, and if SailingMode
+                # is enabled it is allowed to fluctuate down to 75%
+                echo "" >"$f_cached_result"
+        elif [[ "$status" != "discharging" ]] && [[ "$percentage" -ge 99 ]]; then
+                # If almost full or better and plugged in, we do not need to see
+                # details about battery. An icon indicating power is plugged in,
+                # should be enough
+                printf "%s" "$icon_status" >"$f_cached_result"
+        else
+                #  Variables only retrieved when needed, in order to cut down overhead
+                color_bg="$(print_color_charge bg)"
+                remain=$(print_battery_remain)
+                printf "%s" "${color_bg}$icon_status ${percentage} ${remain}#[default]" >"$f_cached_result"
+        fi
+        cat "$f_cached_result"
 }
 
 main
