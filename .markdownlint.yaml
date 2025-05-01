@@ -1,0 +1,10 @@
+---
+
+MD013:
+  line_length: 92
+  tables: false
+  code: false
+
+MD033:
+  # Allowed elements
+  allowed_elements: [nbsp, prefix]
