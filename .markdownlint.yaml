@@ -5,6 +5,6 @@ MD013:
   tables: false
   code: false
 
-MD033:
-  # Allowed elements
-  allowed_elements: [nbsp, prefix]
+# MD033:
+#   # Allowed elements
+#   allowed_elements: [nbsp, prefix]

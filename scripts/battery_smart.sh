@@ -66,7 +66,12 @@ main() {
     percentage="$("$CURRENT_DIR"/battery_percentage.sh | sed -e 's/%//')"
     icon_status=$(print_icon_status "$status")
 
-    if [[ "$percentage" -ge 65 ]] && [[ -d "/Applications/AlDente.app" ]]; then
+    if [[ "$status" = "discharging" ]]; then
+        #  Variables only retrieved when needed, in order to cut down overhead
+        color_bg="$(print_color_charge bg)"
+        remain=$(print_battery_remain)
+        printf "%s" "${color_bg}$icon_status ${percentage} ${remain}#[default]" >"$f_cached_result"
+    elif [[ "$percentage" -ge 65 ]] && [[ -d "/Applications/AlDente.app" ]]; then
         # If AlDente is used 80% is considered fully charged, and if SailingMode
         # is enabled it is allowed to fluctuate down to 75%
         echo "" >"$f_cached_result"
