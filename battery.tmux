@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # shellcheck disable=SC1091
 source "$CURRENT_DIR/scripts/helpers.sh"
@@ -45,7 +45,7 @@ set_tmux_option() {
 
 do_interpolation() {
     local all_interpolated="$1"
-    for ((i=0; i<${#battery_commands[@]}; i++)); do
+    for ((i = 0; i < ${#battery_commands[@]}; i++)); do
         all_interpolated=${all_interpolated//${battery_interpolation[$i]}/${battery_commands[$i]}}
     done
     echo "$all_interpolated"
@@ -64,8 +64,8 @@ main() {
     if [[ -d /proc/ish ]]; then
         tmux display "Plugin tmux-battery can not run on iSH!"
     else
-    update_tmux_option "status-right"
-    update_tmux_option "status-left"
+        update_tmux_option "status-right"
+        update_tmux_option "status-left"
     fi
 }
 main
