@@ -56,8 +56,9 @@ check_status() {
     log_it "status[$status] percentage[$percentage]"
 
     if pgrep AlDente >/dev/null && [[ "$percentage" -ge "$alldente_is_charged_level" ]]; then
-        # If AlDente is used and power is at least alldente_is_charged_level, assume
-        # that if system believes it runs on battery, it is a non-issue.
+        # If AlDente is used and charge is at least alldente_is_charged_level,
+        # assume that if system believes it runs on battery,
+        # it is just AlDentea doing Automatic Discharge
         clear_battery_status
     else
         if [[ "$status" != "discharging" ]] && [[ "$percentage" -ge 99 ]]; then
@@ -98,7 +99,7 @@ cache_max_age=30 # seconds
 # Since AlDente fakes system to be on battery power if charge is above its target
 # level, the practical approach seems to be to simply assume fully charged
 # if at or above AlDente level (minus Sailing mode if used)
-alldente_is_charged_level=70
+alldente_is_charged_level=75
 
 cache_check
 
