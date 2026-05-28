@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# shellcheck disable=SC1091
-source "$CURRENT_DIR/helpers.sh"
+# shellcheck source=scripts/helpers.sh
+source "$CURRENT_DIR"/helpers.sh
 
 short=false
 
 get_remain_settings() {
-    short=$(get_tmux_option "@batt_remain_short" false)
+    short=$(get_tmux_option @batt_remain_short false)
 }
 
 battery_discharging() {
@@ -19,7 +19,7 @@ battery_discharging() {
 
 battery_charged() {
     local status
-    status="$(battery_status)"
+    status=$(battery_status)
     [[ $status =~ (charged) || $status =~ (full) ]]
 }
 
@@ -30,9 +30,14 @@ convertmins() {
     printf "%02d:%02d\n" "$h" "$m"
 }
 
+eta_unknown() {
+    # Consistent display of remaining time unknown
+    printf '~?:??\n'
+}
+
 apm_battery_remaining_time() {
     local remaining_time
-    remaining_time="$(convertmins "$(apm -m)")"
+    remaining_time=$(convertmins "$(apm -m)")
     if battery_discharging; then
         if $short; then
             echo "$remaining_time" | awk '{printf "~%s", $1}'
@@ -52,16 +57,17 @@ apm_battery_remaining_time() {
 
 pmset_battery_remaining_time() {
     local status
-    status="$(pmset -g batt)"
+    status=$(pmset -g batt)
     if echo "$status" | grep 'no estimate' >/dev/null 2>&1; then
         if $short; then
-            echo '~?:??'
+            eta_unknown
+            # return
         else
             echo '- Calculating estimate...'
         fi
     else
         local remaining_time
-        remaining_time="$(echo "$status" | grep -o '[0-9]\{1,2\}:[0-9]\{1,2\}')"
+        remaining_time=$(echo "$status" | grep -o '[0-9]\{1,2\}:[0-9]\{1,2\}')
         if battery_discharging; then
             if $short; then
                 echo "$remaining_time" | awk '{printf "~%s", $1}'
@@ -114,10 +120,10 @@ upower_battery_remaining_time() {
 acpi_battery_remaining_time() {
     local remaining_time
     #  Only use hours:minutes
-    remaining_time="$(acpi -b | grep -m 1 -Eo "[0-9]+:[0-9]+")"
+    remaining_time=$(acpi -b | grep -m 1 -Eo "[0-9]+:[0-9]+")
     if [[ -z "$remaining_time" ]]; then
         if $short; then
-            echo '~?:??'
+            eta_unknown
         else
             echo '- Calculating estimate...'
         fi
@@ -145,16 +151,16 @@ acpi_battery_remaining_time() {
 }
 
 print_battery_remain() {
-    if is_wsl; then
-        echo "?" # currently unsupported on WSL
-    elif command_exists "pmset"; then
-        pmset_battery_remaining_time
-    elif command_exists "acpi"; then
+    if command_exists acpi; then
         acpi_battery_remaining_time
-    elif command_exists "upower"; then
+    elif command_exists upower; then
         upower_battery_remaining_time
-    elif command_exists "apm"; then
+    elif command_exists pmset; then
+        pmset_battery_remaining_time
+    elif command_exists apm; then
         apm_battery_remaining_time
+    else
+        eta_unknown # unsupported
     fi
 }
 
@@ -162,4 +168,5 @@ main() {
     get_remain_settings
     print_battery_remain
 }
+
 main

@@ -30,6 +30,7 @@ cache_check() {
     ) || file_mod_time=0 # invalidate cache by setting a zero timestamp
 
     time_diff=$((current_time - file_mod_time))
+    log_it "cache age: $time_diff"
     if ((time_diff < cache_max_age)); then
         cat "$f_cached_result"
         exit 0
@@ -52,21 +53,20 @@ check_status() {
 
     status=$(battery_status)
     percentage="$("$CURRENT_DIR"/battery_percentage.sh | sed -e 's/%//')"
-    echo "><> status[$status] percentage[$percentage]" >/dev/stderr
+    log_it "status[$status] percentage[$percentage]"
 
     if pgrep AlDente >/dev/null && [[ "$percentage" -ge "$alldente_is_charged_level" ]]; then
         # If AlDente is used and power is at least alldente_is_charged_level, assume
         # that if system believes it runs on battery, it is a non-issue.
         clear_battery_status
     else
-        icon_status=$(print_icon_status "$status")
-
         if [[ "$status" != "discharging" ]] && [[ "$percentage" -ge 99 ]]; then
             # If almost full or better and plugged in, we do not need to see
             # details about battery level.
             clear_battery_status
         else
-            color_bg="$(print_color_charge bg)"
+            color_bg=$(print_color_charge bg)
+            icon_status=$(print_icon_status "$status")
             remain=$(print_battery_remain)
             printf "%s" "${color_bg}$icon_status ${percentage} ${remain}#[default] " \
                 >"$f_cached_result"
@@ -82,8 +82,8 @@ check_status() {
 #
 #===============================================================
 
-CURRENT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-PLUGIN_DIR="$(dirname "$CURRENT_DIR")"
+CURRENT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+PLUGIN_DIR=$(dirname "$CURRENT_DIR")
 
 # This script may be triggered frequently, potentially every 5 seconds or less.
 # On slower systems, this frequent execution can lead to noticeable delays
@@ -98,18 +98,23 @@ cache_max_age=30 # seconds
 # Since AlDente fakes system to be on battery power if charge is above its target
 # level, the practical approach seems to be to simply assume fully charged
 # if at or above AlDente level (minus Sailing mode if used)
-alldente_is_charged_level=75
+alldente_is_charged_level=70
 
 cache_check
 
 # If the cache did not handle the request, proceed with recalculating...
 
-# shellcheck disable=SC1091
-source "$CURRENT_DIR/helpers.sh"
-source "$CURRENT_DIR/battery_icon_status.sh" >/dev/null
-source "$CURRENT_DIR/battery_percentage.sh" >/dev/null
-source "$CURRENT_DIR/battery_color_charge.sh" >/dev/null
-source "$CURRENT_DIR/battery_remain.sh" >/dev/null
+# shellcheck source=scripts/helpers.sh
+source "$CURRENT_DIR"/helpers.sh
+
+# shellcheck source=scripts/battery_icon_status.sh
+source "$CURRENT_DIR"/battery_icon_status.sh >/dev/null
+# shellcheck source=scripts/battery_percentage.sh
+source "$CURRENT_DIR"/battery_percentage.sh >/dev/null
+# shellcheck source=scripts/battery_color_charge.sh
+source "$CURRENT_DIR"/battery_color_charge.sh >/dev/null
+# shellcheck source=scripts/battery_remain.sh
+source "$CURRENT_DIR"/battery_remain.sh >/dev/null
 #short=false
 
 check_status

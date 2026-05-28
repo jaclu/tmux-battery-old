@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# shellcheck disable=SC1091
-source "$CURRENT_DIR/helpers.sh"
+# shellcheck source=scripts/helpers.sh
+source "$CURRENT_DIR"/helpers.sh
 
 print_color() {
     local plane="$1"
@@ -18,7 +18,7 @@ print_color() {
 main() {
     local plane="$1"
     local status
-    status="$(battery_status)"
+    status=$(battery_status)
     print_color "$plane" "$status"
 }
 

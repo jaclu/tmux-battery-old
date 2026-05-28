@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# shellcheck disable=SC1091
-source "$CURRENT_DIR/helpers.sh"
+# shellcheck source=scripts/helpers.sh
+source "$CURRENT_DIR"/helpers.sh
 
 print_graph() {
     local percentage=$1
@@ -37,11 +37,12 @@ print_graph() {
 
 main() {
     local percentage
-    percentage="$("$CURRENT_DIR"/battery_percentage.sh)"
+    percentage=$("$CURRENT_DIR"/battery_percentage.sh)
     if [[ "$(uname)" == "OpenBSD" ]]; then
         print_graph "${percentage}"
     else
         print_graph "${percentage%?}"
     fi
 }
+
 main

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# shellcheck disable=SC1091
-source "$CURRENT_DIR/helpers.sh"
+# shellcheck source=scripts/helpers.sh
+source "$CURRENT_DIR"/helpers.sh
 
 print_battery_percentage() {
     local battery
@@ -14,13 +14,13 @@ print_battery_percentage() {
     # Try methods in priority order; first one that returns data wins
     battery=$(upower -e 2>/dev/null | grep -E 'battery|DisplayDevice' | tail -n1)
     if [[ -n "$battery" ]]; then
-        percentage="$(upower -i "$battery" 2>/dev/null | awk '/percentage:/ {print $2}')"
+        percentage=$(upower -i "$battery" 2>/dev/null | awk '/percentage:/ {print $2}')
         if [[ -n "$percentage" ]]; then
             echo "${percentage%.*%}"
             return
         fi
-        energy="$(upower -i "$battery" 2>/dev/null \
-            | awk -v nrg="$energy" '/energy:/ {print nrg+$2}')"
+        energy=$(upower -i "$battery" 2>/dev/null \
+            | awk -v nrg="$energy" '/energy:/ {print nrg+$2}')
         energy_full=$(upower -i "$battery" 2>/dev/null \
             | awk -v nrgfull="$energy_full" '/energy-full:/ {print nrgfull+$2}')
         if [[ -n "$energy" ]] && [[ -n "$energy_full" ]]; then
@@ -51,4 +51,5 @@ print_battery_percentage() {
 main() {
     print_battery_percentage
 }
+
 main

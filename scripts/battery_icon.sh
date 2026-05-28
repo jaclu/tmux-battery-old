@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# shellcheck disable=SC1091
-source "$CURRENT_DIR/helpers.sh"
+# shellcheck source=scripts/helpers.sh
+source "$CURRENT_DIR"/helpers.sh
 
 print_icon() {
     local status=$1

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# shellcheck disable=SC1091
-source "$CURRENT_DIR/helpers.sh"
+# shellcheck source=scripts/helpers.sh
+source "$CURRENT_DIR"/helpers.sh
 
 # script global variables
 icon_status_charged=''
@@ -35,11 +35,11 @@ get_icon_status_charged_default() {
 
 # icons are set as script global variables
 get_icon_status_settings() {
-    icon_status_charged=$(get_tmux_option "@batt_icon_status_charged" "$(get_icon_status_charged_default)")
-    icon_status_charging=$(get_tmux_option "@batt_icon_status_charging" "$icon_status_charging_default")
-    icon_status_discharging=$(get_tmux_option "@batt_icon_status_discharging" "$icon_status_discharging_default")
-    icon_status_attached=$(get_tmux_option "@batt_icon_status_attached" "$icon_status_attached_default")
-    icon_status_unknown=$(get_tmux_option "@batt_icon_status_unknown" "$icon_status_unknown_default")
+    icon_status_charged=$(get_tmux_option @batt_icon_status_charged "$(get_icon_status_charged_default)")
+    icon_status_charging=$(get_tmux_option @batt_icon_status_charging "$icon_status_charging_default")
+    icon_status_discharging=$(get_tmux_option @batt_icon_status_discharging "$icon_status_discharging_default")
+    icon_status_attached=$(get_tmux_option @batt_icon_status_attached "$icon_status_attached_default")
+    icon_status_unknown=$(get_tmux_option @batt_icon_status_unknown "$icon_status_unknown_default")
 }
 
 print_icon_status() {

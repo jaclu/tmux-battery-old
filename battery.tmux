@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CURRENT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# shellcheck disable=SC1091
-source "$CURRENT_DIR/scripts/helpers.sh"
+# shellcheck source=scripts/helpers.sh
+source "$CURRENT_DIR"/scripts/helpers.sh
 
 battery_interpolation=(
     "\#{battery_color_bg}"
@@ -55,14 +55,14 @@ update_tmux_option() {
     local option="$1"
     local option_value
     local new_option_value
-    option_value="$(get_tmux_option "$option")"
+    option_value=$(get_tmux_option "$option")
     new_option_value="$(do_interpolation "$option_value")"
     set_tmux_option "$option" "$new_option_value"
 }
 
 main() {
     if [[ -d /proc/ish ]]; then
-        tmux display "Plugin tmux-battery can not run on iSH!"
+        tmux display "Plugin $plugin_name can not run on iSH!"
     else
         update_tmux_option "status-right"
         update_tmux_option "status-left"
