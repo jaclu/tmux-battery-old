@@ -12,7 +12,7 @@ plugin_name="tmux-battery"
 #  If log_file is empty or undefined, no logging will occur,
 #  so comment it out for normal usage.
 #
-log_file="/tmp/$plugin_name.log"
+# log_file="/tmp/$plugin_name.log"
 
 #
 #  I use an env var TMUX_BIN to point at the used tmux, defined in my
