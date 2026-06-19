@@ -30,7 +30,6 @@ cache_check() {
     ) || file_mod_time=0 # invalidate cache by setting a zero timestamp
 
     time_diff=$((current_time - file_mod_time))
-    log_it "cache age: $time_diff"
     if ((time_diff < cache_max_age)); then
         cat "$f_cached_result"
         exit 0
