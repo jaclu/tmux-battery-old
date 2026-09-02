@@ -11,10 +11,12 @@ print_battery_percentage() {
     local energy
     local energy_full
 
-    # macOS: try precise StateOfCharge first, fall back to Apple approximation
-    ioreg -r -k BatteryData 2>/dev/null | grep '"StateOfCharge"=' \
-        | sed 's/.*"StateOfCharge"=\([0-9]*\).*/\1%/' && return
-    pmset -g batt 2>/dev/null | grep -o "[0-9]\{1,3\}%" && return
+    uname -s | grep -q Darwin && {
+        # macOS: try precise StateOfCharge first, fall back to Apple approximation
+        ioreg -r -k BatteryData 2>/dev/null | grep '"StateOfCharge"=' \
+            | sed 's/.*"StateOfCharge"=\([0-9]*\).*/\1%/' && return
+        pmset -g batt 2>/dev/null | grep -o "[0-9]\{1,3\}%" && return
+    }
 
     # Try methods in priority order; first one that returns data wins
     battery=$(upower -e 2>/dev/null | grep -E 'battery|DisplayDevice' | tail -n1)
