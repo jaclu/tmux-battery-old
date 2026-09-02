@@ -11,6 +11,11 @@ print_battery_percentage() {
     local energy
     local energy_full
 
+    # macOS: try precise StateOfCharge first, fall back to Apple approximation
+    ioreg -r -k BatteryData 2>/dev/null | grep '"StateOfCharge"=' \
+        | sed 's/.*"StateOfCharge"=\([0-9]*\).*/\1%/' && return
+    pmset -g batt 2>/dev/null | grep -o "[0-9]\{1,3\}%" && return
+
     # Try methods in priority order; first one that returns data wins
     battery=$(upower -e 2>/dev/null | grep -E 'battery|DisplayDevice' | tail -n1)
     if [[ -n "$battery" ]]; then
@@ -34,11 +39,6 @@ print_battery_percentage() {
     # If neither upover nor acpi present on a Linux system this should work (even on wsl)
     battery=$(find /sys/class/power_supply/*/capacity 2>/dev/null | tail -n1)
     [[ -n "$battery" ]] && cat "$battery" && return
-
-    # macOS: try precise StateOfCharge first, fall back to Apple approximation
-    ioreg -r -k BatteryData 2>/dev/null | grep '"StateOfCharge"=' \
-        | sed 's/.*"StateOfCharge"=\([0-9]*\).*/\1%/' && return
-    pmset -g batt 2>/dev/null | grep -o "[0-9]\{1,3\}%" && return
 
     # And finally the odd ones
     apm -l 2>/dev/null && return # legacy BSD battery monitor
