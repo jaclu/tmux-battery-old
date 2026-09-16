@@ -25,9 +25,9 @@ battery_charged() {
 
 convertmins() {
     local seconds="$1"
-    ((h = "$seconds" / 60))
-    ((m = "$seconds" % 60))
-    printf "%02d:%02d\n" "$h" "$m"
+    h=$((seconds / 60))
+    m=$((seconds % 60))
+    printf '%02d:%02d\n' "$h" "$m"
 }
 
 eta_unknown() {
